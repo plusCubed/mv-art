@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -68,7 +66,6 @@ public class ArtLocationDetailsActivity extends ActionBarActivity {
     public static class ArtLocationDetailsFragment extends Fragment {
         public static final String INIT_ART_LOCATION_INDEX = "art_location_index";
         private ArtLocation mArtLocation;
-        private ProgressBar progressBar;
 
         public static ArtLocationDetailsFragment newInstance(int index) {
             ArtLocationDetailsFragment fragment = new ArtLocationDetailsFragment();
@@ -104,13 +101,8 @@ public class ArtLocationDetailsActivity extends ActionBarActivity {
                 imageView.setImageDrawable(mArtLocation.pic);
                 progressBar.setVisibility(View.GONE);
             }
-            String string = getString(R.string.details_body, mArtLocation.description);
-            if (mArtLocation.startDate != mArtLocation.endDate) {
-                string += getString(R.string.details_dates, mArtLocation.getStartDateString(getActivity()), mArtLocation.getEndDateString(getActivity()));
-            }
-            Spanned text = Html.fromHtml(string);
             desc.setLineSpacing(0, 1.3f);
-            desc.setText(text);
+            desc.setText(mArtLocation.getFormattedDesc(getActivity()));
             return v;
         }
     }

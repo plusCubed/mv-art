@@ -61,25 +61,34 @@ public class ArtLocationXmlParser {
                 case "name":
                     artLocation.title = readText(parser, tag);
                     break;
+                case "latitude":
+                    artLocation.latitude = Double.parseDouble(readText(parser, tag));
+                    break;
                 case "longitude":
                     artLocation.longitude = Double.parseDouble(readText(parser, tag));
                     break;
-                case "latitude":
-                    artLocation.latitude = Double.parseDouble(readText(parser, tag));
+                case "artist":
+                    artLocation.artist = readText(parser, tag);
+                    break;
+                case "address":
+                    artLocation.address = readText(parser, tag);
                     break;
                 case "description":
                     artLocation.description = readText(parser, tag);
                     break;
-                case "url":
+                case "dedication-year":
+                    artLocation.dedicationYear = readText(parser, tag);
+                    break;
+                case "pic-url":
                     artLocation.picUrl = readText(parser, tag);
                     break;
-                case "thumbnail":
+                case "thumb-url":
                     artLocation.picUrlThumbnail = readText(parser, tag);
                     break;
-                case "startdate":
+                case "start-date":
                     artLocation.setStartDate(readText(parser, tag));
                     break;
-                case "enddate":
+                case "end-date":
                     artLocation.setEndDate(readText(parser, tag));
                     break;
                 default:

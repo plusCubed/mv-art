@@ -13,13 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -59,7 +56,7 @@ import java.util.List;
 /**
  *
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     public static final String STATE_MAP_MODE = "mapMode";
     public static final String FRAGMENT_MAP = "Map";
@@ -131,6 +128,8 @@ public class MainActivity extends ActionBarActivity {
                 showList();
             }
         });
+
+        setTitle("MV Public Art");
     }
 
     private void initMap(final MapFragment finalMapFragment) {
@@ -171,12 +170,7 @@ public class MainActivity extends ActionBarActivity {
                                     imageView.setImageDrawable(artLocation.picThumbnail);
                                 }
                                 title.setText(artLocation.title);
-                                String string = getString(R.string.details_body, artLocation.description);
-                                if (artLocation.startDate != artLocation.endDate) {
-                                    string += getString(R.string.details_dates, artLocation.getStartDateString(MainActivity.this), artLocation.getEndDateString(MainActivity.this));
-                                }
-                                Spanned text = Html.fromHtml(string);
-                                snippet.setText(text);
+                                snippet.setText(artLocation.getFormattedDesc(MainActivity.this));
 
                                 v.post(new Runnable() {
                                     @Override
@@ -219,15 +213,6 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
         initMap(mapFragment);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /*getMenuInflater().inflate(R.menu.map_main, menu);
-        MenuItem item = menu.findItem(R.id.map_main_switch);
-        item.setIcon(mMapMode ? R.drawable.ic_list_white : R.drawable.ic_map_white);
-        item.setTitle(mMapMode ? R.string.list : R.string.map);*/
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -307,7 +292,7 @@ public class MainActivity extends ActionBarActivity {
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 mTask = new DownloadXmlTask();
-                mTask.execute("http://mcscoring.com/android/art.xml");
+                mTask.execute("http://pluscubed.github.io/mvart-testing-data/testing_data.xml");
             } else {
                 new MaterialDialog.Builder(this)
                         .content(getString(R.string.cant_connect))
@@ -351,24 +336,14 @@ public class MainActivity extends ActionBarActivity {
             for (ArtLocation art : list) {
                 LatLng latLng = new LatLng(art.latitude, art.longitude);
                 MarkerOptions position = new MarkerOptions().position(latLng);
-                if (art.endDate == art.startDate) {
-                    position.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                } else {
-                    position.icon(BitmapDescriptorFactory.defaultMarker());
+                if (art.endDate != art.startDate) {
+                    position.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 }
                 Marker marker = map.addMarker(position);
                 mMarkers.add(marker);
             }
         }
     }
-/*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ArtLocationList.getInstance().getList().size() == 0) {
-            downloadArtLocationsToList();
-        }
-    }*/
 
     private GoogleMap getMap() {
         return mMapMode ? ((MapFragment) getFragmentManager().findFragmentByTag(FRAGMENT_MAP)).getMap() : null;

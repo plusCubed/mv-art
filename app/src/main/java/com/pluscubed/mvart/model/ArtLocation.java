@@ -2,7 +2,11 @@ package com.pluscubed.mvart.model;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.format.DateFormat;
+
+import com.pluscubed.mvart.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,9 +21,12 @@ public class ArtLocation {
     public double longitude;
     public String picUrl;
     public String picUrlThumbnail;
-    public Drawable picThumbnail;
     public Drawable pic;
+    public Drawable picThumbnail;
+    public String artist;
+    public String address;
     public String description;
+    public String dedicationYear;
     public long startDate;
     public long endDate;
 
@@ -47,6 +54,19 @@ public class ArtLocation {
 
     public String getEndDateString(Context context) {
         return DateFormat.getDateFormat(context).format(new Date(endDate));
+    }
+
+    public Spanned getFormattedDesc(Context context) {
+        String string = context.getString(R.string.details_body, artist, address);
+        if (!description.equals("")) {
+            string += context.getString(R.string.details_desc, description);
+        }
+        if (!dedicationYear.equals("")) {
+            string += context.getString(R.string.details_dedication, dedicationYear);
+        } else if (startDate != endDate) {
+            string += context.getString(R.string.details_dates, getStartDateString(context), getEndDateString(context));
+        }
+        return Html.fromHtml(string);
     }
 
 }

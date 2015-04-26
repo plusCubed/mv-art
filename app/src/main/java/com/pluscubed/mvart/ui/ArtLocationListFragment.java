@@ -48,7 +48,7 @@ public class ArtLocationListFragment extends Fragment {
         public void onBindViewHolder(ArtViewHolder holder, int i) {
             ArtLocation location = ArtLocationList.getInstance().get(i);
             holder.title.setText(location.title);
-            holder.desc.setText(location.description);
+            holder.desc.setText(location.artist + ", " + location.description);
         }
 
         @Override

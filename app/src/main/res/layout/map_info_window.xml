@@ -36,7 +36,6 @@
         android:id="@id/info_window_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:paddingTop="2dp"
         tools:text="12345 some random street, Mountain View, CA" />
 
