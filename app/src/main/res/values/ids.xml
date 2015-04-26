@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="info_window_title" type="id" />
+    <item name="info_window_desc" type="id" />
+    <item name="info_window_image" type="id" />
+    <item name="info_window_loading_image" type="id" />
+    <item name="toolbar_generic" type="id" />
+    <item name="activity_generic_content_framelayout" type="id" />
+    <item name="fragment_art_location_details_image_progressbar" type="id" />
+    <item name="fragment_art_location_details_pic_imageview" type="id" />
+    <item name="fragment_art_location_details_desc_textview" type="id" />
+    <item name="fragment_list_recycler" type="id" />
+    <item name="list_item_artlocation_title_textview" type="id" />
+    <item name="list_item_artlocation_desc_textview" type="id" />
+    <item name="activity_main_list_framelayout" type="id" />
+    <item name="activity_main_listbar_linearlayout" type="id" />
+    <item name="activity_main_map_framelayout" type="id" />
+    <item name="activity_main_listbar_framelayout" type="id" />
+    <item name="list_item_artlocation_map_imageview" type="id" />
+</resources>

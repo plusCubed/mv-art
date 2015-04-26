@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp">
+
+    <TextView
+        android:id="@id/list_item_artlocation_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/list_item_artlocation_map_imageview"
+        android:layout_toStartOf="@id/list_item_artlocation_map_imageview"
+        android:paddingTop="16dp"
+        android:textSize="16sp"
+        tools:text="Title of artwork" />
+
+    <TextView
+        android:id="@id/list_item_artlocation_desc_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_artlocation_title_textview"
+        android:layout_toLeftOf="@id/list_item_artlocation_map_imageview"
+        android:layout_toStartOf="@id/list_item_artlocation_map_imageview"
+        android:paddingBottom="16dp"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="14sp"
+        tools:text="Subtext of artwork" />
+
+    <ImageView
+        android:id="@id/list_item_artlocation_map_imageview"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="@string/map_icon"
+        android:padding="8dp"
+        android:src="@drawable/ic_map_white"
+        android:tint="@android:color/black" />
+
+</RelativeLayout>

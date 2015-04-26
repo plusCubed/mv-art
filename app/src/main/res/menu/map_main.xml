@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu>
+    <!--<item
+        android:id="@id/map_main_switch"
+        android:icon="@drawable/ic_list_white"
+        android:title="@string/list"
+        app:showAsAction="ifRoom" />-->
+</menu>

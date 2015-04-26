@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">MV Art</string>
+    <string name="start_date">"Start Date: "</string>
+    <string name="end_date">"End Date: "</string>
+    <string name="date">"Date: "</string>
+    <string name="cant_connect">Can\'t connect to the Internet!</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="retry">Retry</string>
+    <string name="loading">Loadingâ€¦</string>
+    <string name="info_window_image">Info window image</string>
+    <string name="art_location_picture">Art Location Picture</string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
+    <string name="list_of_all_art">List of all art</string>
+    <string name="map_icon">Map Icon</string>
+
+    <string name="details_body"><![CDATA[
+        <b>Description:</b>&nbsp;&nbsp;%1$s
+    ]]></string>
+
+    <string name="details_dates"><![CDATA[
+        <br/><b>Start Date:</b>&nbsp;&nbsp;%1$s<br/>
+        <b>End Date:</b>&nbsp;&nbsp;%2$s
+    ]]></string>
+</resources>
