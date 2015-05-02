@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(android.R.id.content)
                             .getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
+                    //noinspection deprecation
                     findViewById(android.R.id.content)
                             .getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
