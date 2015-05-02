@@ -2,7 +2,10 @@ package com.pluscubed.mvart.ui;
 
 import android.app.ActivityManager;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
@@ -42,6 +46,35 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.BLACK);
         }
 
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        boolean isWiFi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
+        if (!isWiFi) {
+            MaterialDialog dialog = new MaterialDialog.Builder(this)
+                    .content("You are using mobile data. Displaying these images will use a lot of data. Are you sure you want to view them?")
+                    .positiveText("Continue")
+                    .negativeText("Go back")
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            init();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            finish();
+                        }
+                    })
+                    .build();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        } else {
+            init();
+        }
+    }
+
+    private void init() {
         final int index = getIntent().getIntExtra(ART_LOCATION_INDEX, 0);
         final ArtLocation artLocation = ArtLocationList.getInstance().get(index);
 
@@ -64,7 +97,6 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(artLocation.title);
-
     }
 
     @Override
