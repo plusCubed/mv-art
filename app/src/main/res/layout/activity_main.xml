@@ -24,12 +24,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:layout_below="@id/toolbar_generic"
-        android:background="?toolbarShadow" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
         android:layout_above="@id/activity_main_listbar_framelayout"
         android:background="@drawable/toolbar_shadow"
         android:scaleY="-1" />
@@ -129,5 +123,12 @@
         android:id="@id/activity_main_list_framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_generic" />
+        android:layout_below="@id/toolbar_generic"
+        android:elevation="2dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/toolbar_generic"
+        android:background="?toolbarShadow" />
 </RelativeLayout>
