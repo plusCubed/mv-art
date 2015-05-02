@@ -155,19 +155,20 @@ public class MainActivity extends AppCompatActivity {
                                 TextView title = (TextView) v.findViewById(R.id.info_window_title);
                                 TextView snippet = (TextView) v.findViewById(R.id.info_window_desc);
 
-                                if (artLocation.picThumbnail == null) {
+                                if (artLocation.thumbnailPic == null) {
                                     progressBar.setVisibility(View.VISIBLE);
                                     imageView.setVisibility(View.GONE);
                                     SparseArray<Object> downloadArgs = new SparseArray<>();
                                     downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_ARTLOCATION, artLocation);
                                     downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_MARKER, marker);
                                     downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_THUMBNAIL_BOOL, true);
+                                    downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_PIC_INDEX, -1);
                                     DownloadImageTask task = new DownloadImageTask();
                                     task.execute(downloadArgs);
                                 } else {
                                     progressBar.setVisibility(View.GONE);
                                     imageView.setVisibility(View.VISIBLE);
-                                    imageView.setImageDrawable(artLocation.picThumbnail);
+                                    imageView.setImageDrawable(artLocation.thumbnailPic);
                                 }
                                 title.setText(artLocation.title);
                                 snippet.setText(artLocation.getFormattedDesc(MainActivity.this));

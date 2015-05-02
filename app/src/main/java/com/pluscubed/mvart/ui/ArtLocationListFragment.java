@@ -27,7 +27,7 @@ public class ArtLocationListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_list, container, false);
+        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_art_list, container, false);
         view.setAdapter(new ArtLocationAdapter());
         view.setHasFixedSize(true);
         view.setLayoutManager(new LinearLayoutManager(getActivity()));

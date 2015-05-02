@@ -27,6 +27,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.+'
@@ -35,4 +39,5 @@ dependencies {
     compile 'com.android.support:support-v13:22.+'
     compile 'com.google.android.gms:play-services-maps:7.+'
     compile 'com.afollestad:material-dialogs:0.+'
+    compile 'com.github.chrisbanes.photoview:library:1.+'
 }

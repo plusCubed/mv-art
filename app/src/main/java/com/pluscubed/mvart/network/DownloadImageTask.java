@@ -20,16 +20,17 @@ import java.net.URL;
 public class DownloadImageTask extends AsyncTask<SparseArray<Object>, Void, Void> {
 
     public static final int DL_IMAGE_ARGS_ARTLOCATION = 0;
-    public static final int DL_IMAGE_ARGS_MARKER = 1;
-    public static final int DL_IMAGE_ARGS_IMAGEVIEW = 2;
-    public static final int DL_IMAGE_ARGS_PROGRESSBAR = 3;
-    public static final int DL_IMAGE_ARGS_THUMBNAIL_BOOL = 4;
+    public static final int DL_IMAGE_ARGS_PIC_INDEX = 1;
+    public static final int DL_IMAGE_ARGS_MARKER = 2;
+    public static final int DL_IMAGE_ARGS_IMAGEVIEW = 3;
+    public static final int DL_IMAGE_ARGS_PROGRESSBAR = 4;
+    public static final int DL_IMAGE_ARGS_THUMBNAIL_BOOL = 5;
 
-    private ArtLocation mArtLocation;
     private Marker mMarker;
     private boolean mThumbnailMode;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
+    private Drawable mDrawable;
 
 
     @SafeVarargs
@@ -37,22 +38,23 @@ public class DownloadImageTask extends AsyncTask<SparseArray<Object>, Void, Void
     protected final Void doInBackground(SparseArray<Object>... objects) {
         SparseArray<Object> downloadArgs = objects[0];
 
-        mArtLocation = (ArtLocation) downloadArgs.get(DL_IMAGE_ARGS_ARTLOCATION);
+        ArtLocation artLocation = (ArtLocation) downloadArgs.get(DL_IMAGE_ARGS_ARTLOCATION);
         mMarker = (Marker) downloadArgs.get(DL_IMAGE_ARGS_MARKER);
         mThumbnailMode = (boolean) downloadArgs.get(DL_IMAGE_ARGS_THUMBNAIL_BOOL);
         mImageView = (ImageView) downloadArgs.get(DL_IMAGE_ARGS_IMAGEVIEW);
         mProgressBar = (ProgressBar) downloadArgs.get(DL_IMAGE_ARGS_PROGRESSBAR);
+        int picIndex = (int) downloadArgs.get(DL_IMAGE_ARGS_PIC_INDEX);
 
         try {
             InputStream stream = null;
 
             try {
                 if (mThumbnailMode) {
-                    stream = (InputStream) new URL(mArtLocation.picUrlThumbnail).getContent();
-                    mArtLocation.picThumbnail = Drawable.createFromStream(stream, null);
+                    stream = (InputStream) new URL(artLocation.thumbnailPicUrl).getContent();
+                    artLocation.thumbnailPic = Drawable.createFromStream(stream, null);
                 } else {
-                    stream = (InputStream) new URL(mArtLocation.picUrl).getContent();
-                    mArtLocation.pic = Drawable.createFromStream(stream, null);
+                    stream = (InputStream) new URL(artLocation.picUrls.get(picIndex)).getContent();
+                    mDrawable = Drawable.createFromStream(stream, null);
                 }
             } finally {
                 if (stream != null) {
@@ -74,7 +76,7 @@ public class DownloadImageTask extends AsyncTask<SparseArray<Object>, Void, Void
                 mMarker.showInfoWindow();
             }
         } else {
-            mImageView.setImageDrawable(mArtLocation.pic);
+            mImageView.setImageDrawable(mDrawable);
             mImageView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }

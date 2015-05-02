@@ -79,11 +79,11 @@ public class ArtLocationXmlParser {
                 case "dedication-year":
                     artLocation.dedicationYear = readText(parser, tag);
                     break;
-                case "pic-url":
-                    artLocation.picUrl = readText(parser, tag);
+                case "pic-urls":
+                    artLocation.picUrls = readArtPicUrlItem(parser);
                     break;
                 case "thumb-url":
-                    artLocation.picUrlThumbnail = readText(parser, tag);
+                    artLocation.thumbnailPicUrl = readText(parser, tag);
                     break;
                 case "start-date":
                     artLocation.setStartDate(readText(parser, tag));
@@ -97,6 +97,26 @@ public class ArtLocationXmlParser {
             }
         }
         return artLocation;
+    }
+
+    private List<String> readArtPicUrlItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "pic-urls");
+        List<String> urls = new ArrayList<>();
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String tag = parser.getName();
+            switch (tag) {
+                case "item":
+                    urls.add(readText(parser, tag));
+                    break;
+                default:
+                    skip(parser);
+                    break;
+            }
+        }
+        return urls;
     }
 
     private String readText(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {

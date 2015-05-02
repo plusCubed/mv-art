@@ -10,7 +10,9 @@ import com.pluscubed.mvart.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Art location data object
@@ -19,16 +21,19 @@ public class ArtLocation {
     public String title;
     public double latitude;
     public double longitude;
-    public String picUrl;
-    public String picUrlThumbnail;
-    public Drawable pic;
-    public Drawable picThumbnail;
+    public List<String> picUrls;
+    public String thumbnailPicUrl;
+    public Drawable thumbnailPic;
     public String artist;
     public String address;
     public String description;
     public String dedicationYear;
     public long startDate;
     public long endDate;
+
+    public ArtLocation() {
+        picUrls = new ArrayList<>();
+    }
 
     private static long parseString(String string) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
