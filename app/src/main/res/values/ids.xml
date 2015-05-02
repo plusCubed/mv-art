@@ -16,4 +16,5 @@
     <item name="activity_main_listbar_framelayout" type="id" />
     <item name="list_item_artlocation_map_imageview" type="id" />
     <item name="activity_art_images_viewpager" type="id" />
+    <item name="activity_main_legend_relativelayout" type="id" />
 </resources>

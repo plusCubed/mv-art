@@ -21,6 +21,11 @@
         android:layout_above="@id/activity_main_listbar_framelayout"
         android:layout_below="@id/toolbar_generic" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/toolbar_generic"
+        android:background="?toolbarShadow" />
 
     <View
         android:layout_width="match_parent"
@@ -61,6 +66,63 @@
         </LinearLayout>
 
     </FrameLayout>
+
+    <RelativeLayout
+        android:id="@id/activity_main_legend_relativelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/activity_main_listbar_framelayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/legend1"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:contentDescription="@string/list"
+            android:padding="2dp"
+            android:src="?colorAccent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/legend1"
+            android:layout_toRightOf="@id/legend1"
+            android:text="Non-permanent"
+            android:textAllCaps="false" />
+
+        <ImageView
+            android:id="@+id/legend2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_below="@id/legend1"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:contentDescription="@string/list"
+            android:padding="2dp"
+            android:src="@android:color/holo_red_dark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/legend1"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@id/legend2"
+            android:layout_toRightOf="@id/legend2"
+            android:text="Permanent"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
 
 
     <FrameLayout
