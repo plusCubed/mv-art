@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setTitle("MV Public Art");
+        setTitle("Mountain View Public Art");
     }
 
     private void initMap(final MapFragment finalMapFragment) {
