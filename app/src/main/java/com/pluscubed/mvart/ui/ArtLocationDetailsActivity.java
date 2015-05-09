@@ -13,7 +13,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,10 +20,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
-import com.pluscubed.mvart.network.DownloadImageTask;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -92,7 +96,6 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
                 return artLocation.picUrls.size();
             }
         };
-        pager.setOffscreenPageLimit(3);
         pager.setAdapter(adapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -133,20 +136,32 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_art_image, container, false);
-            ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.fragment_art_location_details_image_progressbar);
-            PhotoView imageView = (PhotoView) v.findViewById(R.id.fragment_art_location_details_pic_imageview);
+            final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.fragment_art_location_details_image_progressbar);
+            final PhotoView imageView = (PhotoView) v.findViewById(R.id.fragment_art_location_details_pic_imageview);
 
-            DownloadImageTask imageTask = new DownloadImageTask();
-            SparseArray<Object> dlArgs = new SparseArray<>();
-            dlArgs.put(DownloadImageTask.DL_IMAGE_ARGS_ARTLOCATION, mArtLocation);
-            dlArgs.put(DownloadImageTask.DL_IMAGE_ARGS_IMAGEVIEW, imageView);
-            dlArgs.put(DownloadImageTask.DL_IMAGE_ARGS_PROGRESSBAR, progressBar);
-            dlArgs.put(DownloadImageTask.DL_IMAGE_ARGS_THUMBNAIL_BOOL, false);
-            dlArgs.put(DownloadImageTask.DL_IMAGE_ARGS_PIC_INDEX, mPicIndex);
-            imageTask.execute(dlArgs);
-            if (mArtLocation.thumbnailPic != null && mPicIndex == 0) {
-                imageView.setImageDrawable(mArtLocation.thumbnailPic);
-            }
+            progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(this)
+                    .load(mArtLocation.picUrls.get(mPicIndex))
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .crossFade()
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            imageView.setImageDrawable(resource);
+                        }
+                    });
 
             return v;
         }

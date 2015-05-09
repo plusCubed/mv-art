@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,7 +17,6 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,7 +44,6 @@ import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
 import com.pluscubed.mvart.network.ArtLocationXmlParser;
-import com.pluscubed.mvart.network.DownloadImageTask;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -52,6 +53,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -141,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onMapReady(final GoogleMap googleMap) {
                         googleMap.setMyLocationEnabled(true);
                         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                            private Bitmap mLoadingBitmap;
+                            private Marker mCurrentlyShowing;
+
                             @Override
                             public View getInfoWindow(Marker marker) {
                                 return null;
@@ -149,29 +155,44 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public View getInfoContents(final Marker marker) {
                                 final View v = getLayoutInflater().inflate(R.layout.map_info_window, null);
-                                ArtLocation artLocation = ArtLocationList.getInstance().get(mMarkers.indexOf(marker));
+                                final ArtLocation artLocation = ArtLocationList.getInstance().get(mMarkers.indexOf(marker));
                                 ImageView imageView = (ImageView) v.findViewById(R.id.info_window_image);
-                                TextView progressBar = (TextView) v.findViewById(R.id.info_window_loading_image);
+                                final TextView progressBar = (TextView) v.findViewById(R.id.info_window_loading_image);
                                 TextView title = (TextView) v.findViewById(R.id.info_window_title);
                                 TextView snippet = (TextView) v.findViewById(R.id.info_window_desc);
 
-                                if (artLocation.thumbnailPic == null) {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                    imageView.setVisibility(View.GONE);
-                                    SparseArray<Object> downloadArgs = new SparseArray<>();
-                                    downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_ARTLOCATION, artLocation);
-                                    downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_MARKER, marker);
-                                    downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_THUMBNAIL_BOOL, true);
-                                    downloadArgs.put(DownloadImageTask.DL_IMAGE_ARGS_PIC_INDEX, -1);
-                                    DownloadImageTask task = new DownloadImageTask();
-                                    task.execute(downloadArgs);
-                                } else {
-                                    progressBar.setVisibility(View.GONE);
-                                    imageView.setVisibility(View.VISIBLE);
-                                    imageView.setImageDrawable(artLocation.thumbnailPic);
-                                }
+                                progressBar.setVisibility(View.VISIBLE);
+
                                 title.setText(artLocation.title);
                                 snippet.setText(artLocation.getFormattedDesc(MainActivity.this));
+
+                                if (!marker.equals(mCurrentlyShowing) || mLoadingBitmap == null) {
+                                    imageView.setVisibility(View.GONE);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                mLoadingBitmap = Glide.with(MainActivity.this)
+                                                        .load(artLocation.thumbnailPicUrl)
+                                                        .asBitmap()
+                                                        .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                                        .get();
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        marker.showInfoWindow();
+                                                    }
+                                                });
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }).start();
+                                } else {
+                                    imageView.setVisibility(View.VISIBLE);
+                                    imageView.setImageBitmap(mLoadingBitmap);
+                                    progressBar.setVisibility(View.GONE);
+                                }
 
                                 v.post(new Runnable() {
                                     @Override
@@ -189,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
                                         googleMap.animateCamera(center, 300, null);
                                     }
                                 });
+
+                                mCurrentlyShowing = marker;
+
                                 return v;
                             }
                         });

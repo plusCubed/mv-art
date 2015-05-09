@@ -72,7 +72,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:background="#dcffffff"
-        android:elevation="1dp"
+        android:elevation="1.5dp"
         android:orientation="vertical"
         android:padding="8dp">
 

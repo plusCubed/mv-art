@@ -1,7 +1,6 @@
 package com.pluscubed.mvart.model;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateFormat;
@@ -23,7 +22,6 @@ public class ArtLocation {
     public double longitude;
     public List<String> picUrls;
     public String thumbnailPicUrl;
-    public Drawable thumbnailPic;
     public String artist;
     public String address;
     public String description;

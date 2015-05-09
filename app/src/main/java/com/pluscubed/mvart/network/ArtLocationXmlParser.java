@@ -83,7 +83,7 @@ public class ArtLocationXmlParser {
                     artLocation.picUrls = readArtPicUrlItem(parser);
                     break;
                 case "thumb-url":
-                    artLocation.thumbnailPicUrl = readText(parser, tag);
+                    artLocation.thumbnailPicUrl = readText(parser, tag).trim();
                     break;
                 case "start-date":
                     artLocation.setStartDate(readText(parser, tag));
@@ -109,7 +109,7 @@ public class ArtLocationXmlParser {
             String tag = parser.getName();
             switch (tag) {
                 case "item":
-                    urls.add(readText(parser, tag));
+                    urls.add(readText(parser, tag).trim());
                     break;
                 default:
                     skip(parser);
