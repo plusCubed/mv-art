@@ -15,26 +15,47 @@ import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * List
  */
 public class ArtLocationListFragment extends Fragment {
+
+    private RecyclerView mRecyclerView;
+    private ArtLocationAdapter mAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    public void updateDataAndSetSearch(String search) {
+        mAdapter.updateDataAndSetSearch(search);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_art_list, container, false);
-        view.setAdapter(new ArtLocationAdapter());
-        view.setHasFixedSize(true);
-        view.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return view;
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_art_list, container, false);
+        mAdapter = new ArtLocationAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return mRecyclerView;
     }
 
     private class ArtLocationAdapter extends RecyclerView.Adapter<ArtLocationAdapter.ArtViewHolder> {
+
+        private String mSearchQuery;
+        private List<ArtLocation> mArtLocations;
+
+        public ArtLocationAdapter() {
+            mArtLocations = ArtLocationList.getInstance().getList();
+            mSearchQuery = "";
+        }
+
         @Override
         public ArtViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_artlocation, viewGroup, false);
@@ -46,15 +67,31 @@ public class ArtLocationListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ArtViewHolder holder, int i) {
-            ArtLocation location = ArtLocationList.getInstance().get(i);
+            ArtLocation location = mArtLocations.get(i);
             holder.title.setText(location.title);
             String text = location.artist + "\n" + location.address;
             holder.desc.setText(text);
         }
 
+        public void updateDataAndSetSearch(String string) {
+            mSearchQuery = string;
+
+            if (!mSearchQuery.isEmpty()) {
+                mArtLocations = new ArrayList<>();
+                for (ArtLocation location : ArtLocationList.getInstance().getList()) {
+                    if (location.matchFilter(string)) {
+                        mArtLocations.add(location);
+                    }
+                }
+            } else {
+                mArtLocations = ArtLocationList.getInstance().getList();
+            }
+            notifyDataSetChanged();
+        }
+
         @Override
         public int getItemCount() {
-            return ArtLocationList.getInstance().getList().size();
+            return mArtLocations.size();
         }
 
         class ArtViewHolder extends RecyclerView.ViewHolder {

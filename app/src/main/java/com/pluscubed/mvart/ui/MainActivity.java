@@ -14,9 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -90,6 +93,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            private boolean mListShownBeforeSearch;
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mListShownBeforeSearch = findViewById(R.id.activity_main_list_framelayout).getTranslationY() == 0;
+                if (!mListShownBeforeSearch) {
+                    showList();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (!mListShownBeforeSearch) {
+                    hideList();
+                }
+                ArtLocationListFragment fragment = (ArtLocationListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_LIST);
+                fragment.updateDataAndSetSearch("");
+                return true;
+            }
+        });
+        SearchView view = (SearchView) MenuItemCompat.getActionView(item);
+        view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArtLocationListFragment fragment = (ArtLocationListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_LIST);
+                fragment.updateDataAndSetSearch(newText);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -101,33 +147,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mMarkers = new ArrayList<>();
-        mMapMode = true;
-
         if (savedInstanceState == null) {
+            mMapMode = true;
             downloadArtLocationsToList();
         } else {
             mMapMode = savedInstanceState.getBoolean(STATE_MAP_MODE);
         }
 
+        //ADD FRAGMENTS
         addMapFragment();
 
+        FragmentManager manager = getFragmentManager();
+        ArtLocationListFragment listFragment = (ArtLocationListFragment) manager.findFragmentByTag(FRAGMENT_LIST);
+        if (listFragment == null) {
+            listFragment = new ArtLocationListFragment();
+            manager.beginTransaction()
+                    .add(R.id.activity_main_list_framelayout, listFragment, FRAGMENT_LIST)
+                    .commit();
+        }
+        //
+
         if (!mMapMode) {
-            showList();
+            showAndUpdateList();
         } else {
-            addOnGlobalLayoutListener(new Runnable() {
+            addOnGlobalLayoutListener(findViewById(R.id.activity_main_list_framelayout), new Runnable() {
                 @Override
                 public void run() {
-                    final FrameLayout layout = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
-                    layout.setTranslationY(layout.getHeight());
+                    final FrameLayout listFragmentFrame = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
+                    listFragmentFrame.setTranslationY(listFragmentFrame.getMeasuredHeight());
                 }
             });
         }
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.activity_main_listbar_linearlayout);
-        layout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout openListBar = (LinearLayout) findViewById(R.id.activity_main_listbar_linearlayout);
+        openListBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showList();
+                showAndUpdateList();
             }
         });
 
@@ -135,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMap(final MapFragment finalMapFragment) {
-        addOnGlobalLayoutListener(new Runnable() {
+        addOnGlobalLayoutListener(findViewById(android.R.id.content), new Runnable() {
             @Override
             public void run() {
                 finalMapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -267,7 +323,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideList() {
         final FrameLayout layout = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
-        layout.setTranslationY(0f);
         ObjectAnimator animator = new ObjectAnimator();
         animator.setProperty(View.TRANSLATION_Y);
         animator.setTarget(layout);
@@ -278,21 +333,19 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
+    private void showAndUpdateList() {
+        showList();
+
+        //Update list items
+        ((ArtLocationListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_LIST)).updateDataAndSetSearch("");
+    }
+
     private void showList() {
-        FragmentManager manager = getFragmentManager();
-        ArtLocationListFragment listFragment = (ArtLocationListFragment) manager.findFragmentByTag(FRAGMENT_LIST);
-        if (listFragment == null) {
-            listFragment = new ArtLocationListFragment();
-            manager.beginTransaction()
-                    .add(R.id.activity_main_list_framelayout, listFragment, FRAGMENT_LIST)
-                    .commit();
-        }
-        final FrameLayout layout = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
-        layout.setTranslationY(layout.getHeight());
+        final FrameLayout listFrame = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
         ObjectAnimator animator = new ObjectAnimator();
         animator.setProperty(View.TRANSLATION_Y);
         animator.setFloatValues(0f);
-        animator.setTarget(layout);
+        animator.setTarget(listFrame);
         animator.setDuration(250);
         animator.start();
         mMapMode = false;
@@ -335,9 +388,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addOnGlobalLayoutListener(final Runnable r) {
-        ViewTreeObserver vto = findViewById(android.R.id.content)
-                .getViewTreeObserver();
+    private void addOnGlobalLayoutListener(View view, final Runnable r) {
+        ViewTreeObserver vto = view.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

@@ -43,6 +43,14 @@ public class ArtLocation {
         return 0;
     }
 
+    public boolean matchFilter(String string) {
+        String lowercase = string.toLowerCase();
+        return title.toLowerCase().contains(lowercase) ||
+                artist.toLowerCase().contains(lowercase) ||
+                address.toLowerCase().contains(lowercase) ||
+                description.toLowerCase().contains(lowercase);
+    }
+
     public void setStartDate(String string) {
         startDate = parseString(string);
     }
