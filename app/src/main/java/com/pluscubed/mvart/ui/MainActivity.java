@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pluscubed.mvart.BuildConfig;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
@@ -57,6 +59,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  *
@@ -138,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
         setContentView(R.layout.activity_main);
         getActionBarToolbar();
 
@@ -430,30 +437,31 @@ public class MainActivity extends AppCompatActivity {
     private class DownloadXmlTask extends AsyncTask<String, Void, List<ArtLocation>> {
         @Override
         protected List<ArtLocation> doInBackground(String... urls) {
+            InputStream stream = null;
             try {
-                InputStream stream = null;
                 // Instantiate the parser
                 ArtLocationXmlParser parser = new ArtLocationXmlParser();
-
-                try {
-                    URL url = new URL(urls[0]);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);
-                    // Starts the query
-                    conn.connect();
-                    Log.e("", "Connection opened");
-                    stream = conn.getInputStream();
-                    // Makes sure that the InputStream is closed after the app is
-                    // finished using it.
-                    return parser.parse(stream);
-                } finally {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                }
+                URL url = new URL(urls[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true);
+                // Starts the query
+                conn.connect();
+                Log.e("", "Connection opened");
+                stream = conn.getInputStream();
+                // Makes sure that the InputStream is closed after the app is
+                // finished using it.
+                return parser.parse(stream);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
                 //return getResources().getString(R.string.connection_error);
+            } finally {
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return null;
         }
