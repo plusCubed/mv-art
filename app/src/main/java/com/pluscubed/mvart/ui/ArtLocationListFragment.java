@@ -32,7 +32,9 @@ public class ArtLocationListFragment extends Fragment {
     }
 
     public void updateDataAndSetSearch(String search) {
-        mAdapter.updateDataAndSetSearch(search);
+        if (mAdapter != null) {
+            mAdapter.updateDataAndSetSearch(search);
+        }
     }
 
     @Nullable

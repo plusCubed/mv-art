@@ -395,19 +395,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addOnGlobalLayoutListener(View view, final Runnable r) {
+    private void addOnGlobalLayoutListener(final View view, final Runnable r) {
         ViewTreeObserver vto = view.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 new Handler(Looper.getMainLooper()).post(r);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    findViewById(android.R.id.content)
-                            .getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
                     //noinspection deprecation
-                    findViewById(android.R.id.content)
-                            .getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
             }
         });
@@ -431,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private GoogleMap getMap() {
-        return mMapMode ? ((MapFragment) getFragmentManager().findFragmentByTag(FRAGMENT_MAP)).getMap() : null;
+        return ((MapFragment) getFragmentManager().findFragmentByTag(FRAGMENT_MAP)).getMap();
     }
 
     private class DownloadXmlTask extends AsyncTask<String, Void, List<ArtLocation>> {
