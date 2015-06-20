@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 mTask = new DownloadXmlTask();
-                mTask.execute("http://pluscubed.github.io/mvart-testing-data/testing_data.xml");
+                mTask.execute("http://www.mountainview.gov/publicarts/mv_art.xml");
             } else {
                 new MaterialDialog.Builder(this)
                         .content(getString(R.string.cant_connect))
