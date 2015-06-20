@@ -68,11 +68,17 @@ public class ArtLocation {
     }
 
     public Spanned getFormattedDesc(Context context) {
-        String string = context.getString(R.string.details_body, artist, address);
-        if (!description.equals("")) {
+        String string = "";
+        if (!artist.isEmpty()) {
+            string += context.getString(R.string.details_artist, artist);
+        }
+        if (!address.isEmpty()) {
+            string += context.getString(R.string.details_address, address);
+        }
+        if (!description.isEmpty()) {
             string += context.getString(R.string.details_desc, description);
         }
-        if (!dedicationYear.equals("")) {
+        if (!dedicationYear.isEmpty()) {
             string += context.getString(R.string.details_dedication, dedicationYear);
         } else if (startDate != endDate) {
             string += context.getString(R.string.details_dates, getStartDateString(context), getEndDateString(context));

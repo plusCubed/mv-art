@@ -2,34 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="72dp"
     android:background="?selectableItemBackground"
     android:paddingEnd="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingStart="16dp">
 
-    <TextView
-        android:id="@id/list_item_artlocation_title_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_toLeftOf="@id/list_item_artlocation_map_imageview"
         android:layout_toStartOf="@id/list_item_artlocation_map_imageview"
-        android:paddingTop="16dp"
-        android:textSize="16sp"
-        tools:text="Title of artwork" />
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@id/list_item_artlocation_desc_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/list_item_artlocation_title_textview"
-        android:layout_toLeftOf="@id/list_item_artlocation_map_imageview"
-        android:layout_toStartOf="@id/list_item_artlocation_map_imageview"
-        android:paddingBottom="16dp"
-        android:textColor="?android:textColorSecondary"
-        android:textSize="14sp"
-        tools:text="Subtext of artwork" />
+        <TextView
+            android:id="@id/list_item_artlocation_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="Title of artwork" />
+
+        <TextView
+            android:id="@id/list_item_artlocation_desc_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="14sp"
+            tools:text="Subtext of artwork" />
+    </LinearLayout>
 
     <ImageView
         android:id="@id/list_item_artlocation_map_imageview"

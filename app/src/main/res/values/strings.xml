@@ -14,21 +14,24 @@
     <string name="list_of_all_art">List of all art</string>
     <string name="map_icon">Map Icon</string>
 
-    <string name="details_body"><![CDATA[
-             <b>Artist:</b>&nbsp;&nbsp;%1$s
-        <br/><b>Address:</b>&nbsp;&nbsp;%2$s
-    ]]></string>
+    <string name="details_artist">
+             &lt;b>Artist:&lt;/b> %1$s
+    </string>
 
-    <string name="details_desc"><![CDATA[
-        <br/><b>Description:</b>&nbsp;&nbsp;%1$s
-    ]]></string>
+    <string name="details_address">
+        &lt;br/>&lt;b>Address:&lt;/b> %1$s
+    </string>
 
-    <string name="details_dedication"><![CDATA[
-        <br/><b>Dedication Year:</b>&nbsp;&nbsp;%1$s
-    ]]></string>
+    <string name="details_desc">
+        &lt;br/>&lt;b>Description:&lt;/b> %1$s
+    </string>
 
-    <string name="details_dates"><![CDATA[
-        <br/><b>Start Date:</b>&nbsp;&nbsp;%1$s
-        <br/><b>End Date:</b>&nbsp;&nbsp;%2$s
-    ]]></string>
+    <string name="details_dedication">
+        &lt;br/>&lt;b>Dedication Year:&lt;/b> %1$s
+    </string>
+
+    <string name="details_dates">
+        &lt;br/>&lt;b>Start Date:&lt;/b> %1$s
+        &lt;br/>&lt;b>End Date:&lt;/b> %2$s
+    </string>
 </resources>
