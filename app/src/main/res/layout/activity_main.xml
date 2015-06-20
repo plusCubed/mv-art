@@ -3,6 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--    <include
+            tools:visibility="gone"
+            layout="@layout/activity_launch"/>-->
+
     <include
         android:id="@id/toolbar_generic"
         layout="@layout/toolbar_generic" />

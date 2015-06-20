@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +15,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,23 +38,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pluscubed.mvart.BuildConfig;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
-import com.pluscubed.mvart.network.ArtLocationXmlParser;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  *
@@ -73,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Marker> mMarkers;
     private Toolbar mActionBarToolbar;
     private boolean mMapMode;
-    private DownloadXmlTask mTask;
 
     public static int convertDpToPx(Context context, float dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density
@@ -139,12 +122,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
         setContentView(R.layout.activity_main);
         getActionBarToolbar();
 
@@ -156,7 +137,12 @@ public class MainActivity extends AppCompatActivity {
         mMarkers = new ArrayList<>();
         if (savedInstanceState == null) {
             mMapMode = true;
-            downloadArtLocationsToList();
+            addOnGlobalLayoutListener(findViewById(android.R.id.content), new Runnable() {
+                @Override
+                public void run() {
+                    addArtLocationMarkersFromList(getMap());
+                }
+            });
         } else {
             mMapMode = savedInstanceState.getBoolean(STATE_MAP_MODE);
         }
@@ -370,30 +356,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void downloadArtLocationsToList() {
-        if (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING) {
-            ConnectivityManager connMgr = (ConnectivityManager)
-                    getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                mTask = new DownloadXmlTask();
-                mTask.execute("http://www.mountainview.gov/publicarts/mv_art.xml");
-            } else {
-                new MaterialDialog.Builder(this)
-                        .content(getString(R.string.cant_connect))
-                        .positiveText(getString(R.string.dismiss))
-                        .negativeText(getString(R.string.retry))
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
-                                downloadArtLocationsToList();
-                            }
-                        })
-                        .show();
-            }
-        }
-    }
 
     private void addOnGlobalLayoutListener(final View view, final Runnable r) {
         ViewTreeObserver vto = view.getViewTreeObserver();
@@ -432,44 +394,5 @@ public class MainActivity extends AppCompatActivity {
         return ((MapFragment) getFragmentManager().findFragmentByTag(FRAGMENT_MAP)).getMap();
     }
 
-    private class DownloadXmlTask extends AsyncTask<String, Void, List<ArtLocation>> {
-        @Override
-        protected List<ArtLocation> doInBackground(String... urls) {
-            InputStream stream = null;
-            try {
-                // Instantiate the parser
-                ArtLocationXmlParser parser = new ArtLocationXmlParser();
-                URL url = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
-                // Starts the query
-                conn.connect();
-                Log.e("", "Connection opened");
-                stream = conn.getInputStream();
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
-                return parser.parse(stream);
-            } catch (IOException | XmlPullParserException e) {
-                e.printStackTrace();
-                //return getResources().getString(R.string.connection_error);
-            } finally {
-                if (stream != null) {
-                    try {
-                        stream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(List<ArtLocation> artLocations) {
-            ArtLocationList instance = ArtLocationList.getInstance();
-            instance.clear();
-            instance.addAll(artLocations);
-            addArtLocationMarkersFromList(getMap());
-        }
-    }
 }
