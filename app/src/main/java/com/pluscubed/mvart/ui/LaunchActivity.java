@@ -39,10 +39,10 @@ public class LaunchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
         if (BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
+        setContentView(R.layout.activity_launch);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(

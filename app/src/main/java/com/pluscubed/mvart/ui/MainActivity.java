@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -320,7 +322,8 @@ public class MainActivity extends AppCompatActivity {
         animator.setProperty(View.TRANSLATION_Y);
         animator.setTarget(layout);
         animator.setFloatValues(layout.getHeight());
-        animator.setDuration(250);
+        animator.setDuration(150);
+        animator.setInterpolator(new FastOutLinearInInterpolator());
         animator.start();
         mMapMode = true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -339,7 +342,8 @@ public class MainActivity extends AppCompatActivity {
         animator.setProperty(View.TRANSLATION_Y);
         animator.setFloatValues(0f);
         animator.setTarget(listFrame);
-        animator.setDuration(250);
+        animator.setDuration(150);
+        animator.setInterpolator(new LinearOutSlowInInterpolator());
         animator.start();
         mMapMode = false;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
