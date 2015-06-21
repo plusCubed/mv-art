@@ -20,6 +20,7 @@
         <activity
             android:name=".ui.LaunchActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.MVArt.Launch"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

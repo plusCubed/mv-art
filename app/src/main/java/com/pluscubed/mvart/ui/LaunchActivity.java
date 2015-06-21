@@ -39,7 +39,6 @@ public class LaunchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_launch);
         if (BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());

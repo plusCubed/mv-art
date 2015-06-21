@@ -3,6 +3,10 @@
     <!-- Base application theme. -->
     <style name="Theme.MVArt" parent="Base.Theme.MVArt" />
 
+    <style name="Theme.MVArt.Launch" parent="Base.Theme.MVArt">
+        <item name="android:windowBackground">@drawable/launchscreen</item>
+    </style>
+
     <style name="Base.Theme.MVArt" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="toolbarShadow">@drawable/toolbar_shadow</item>
         <item name="colorPrimary">@color/primary</item>
@@ -10,6 +14,7 @@
         <item name="colorAccent">@color/accent</item>
         <item name="colorControlHighlight">@color/ripple_material_light</item>
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
 </resources>
