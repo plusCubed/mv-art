@@ -34,6 +34,8 @@ import uk.co.senab.photoview.PhotoView;
 
 public class ArtLocationDetailsActivity extends AppCompatActivity {
     public static final String ART_LOCATION_INDEX = "com.pluscubed.mvart.ART_LOCATION_INDEX";
+    private ArtLocation mArtLocation;
+    private int mIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +44,22 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_generic);
         setSupportActionBar(toolbar);
 
-        //toolbar.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(Color.argb(60,0,0,0), 2, Gravity.TOP));
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(
                     new ActivityManager.TaskDescription(null, null, getResources().getColor(R.color.task_bar)));
             getWindow().setStatusBarColor(Color.BLACK);
         }
 
+        mIndex = getIntent().getIntExtra(ART_LOCATION_INDEX, 0);
+        mArtLocation = ArtLocationList.getInstance().get(mIndex);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(mArtLocation.title);
+
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean isWiFi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-        if (!isWiFi) {
+        if (savedInstanceState == null && !isWiFi) {
             MaterialDialog dialog = new MaterialDialog.Builder(this)
                     .content("You are using mobile data. Displaying these images will use a lot of data. Are you sure you want to view them?")
                     .positiveText("Continue")
@@ -79,27 +84,19 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        final int index = getIntent().getIntExtra(ART_LOCATION_INDEX, 0);
-        final ArtLocation artLocation = ArtLocationList.getInstance().get(index);
-
         ViewPager pager = (ViewPager) findViewById(R.id.activity_art_images_viewpager);
         FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getFragmentManager()) {
-
-
             @Override
             public Fragment getItem(int position) {
-                return ArtLocationDetailsFragment.newInstance(index, position);
+                return ArtLocationDetailsFragment.newInstance(mIndex, position);
             }
 
             @Override
             public int getCount() {
-                return artLocation.picUrls.size();
+                return mArtLocation.picUrls.size();
             }
         };
         pager.setAdapter(adapter);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(artLocation.title);
     }
 
     @Override
