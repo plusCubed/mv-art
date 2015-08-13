@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.crashlytics.android.Crashlytics;
-import com.pluscubed.mvart.BuildConfig;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
 import com.pluscubed.mvart.model.ArtLocationList;
@@ -27,8 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
-
 /**
  * Launch Activity
  */
@@ -39,9 +35,6 @@ public class LaunchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
         setContentView(R.layout.activity_launch);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

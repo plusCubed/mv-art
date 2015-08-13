@@ -61,7 +61,7 @@ public class ArtLocationListFragment extends Fragment {
         @Override
         public int getItemViewType(int position) {
             ArtLocation artLocation = mArtLocations.get(position);
-            return artLocation.artist.isEmpty() && artLocation.address.isEmpty() ? 1 : 0;
+            return artLocation.artist.isEmpty() ? 0 : (artLocation.address.isEmpty() ? 1 : 2);
         }
 
         @Override
@@ -72,12 +72,12 @@ public class ArtLocationListFragment extends Fragment {
             holder.desc = (TextView) view.findViewById(R.id.list_item_artlocation_desc_textview);
 
             ViewGroup.LayoutParams params = view.getLayoutParams();
-            if (viewType == 1) {
+            if (viewType == 0) {
                 params.height = MainActivity.convertDpToPx(getActivity(), 48);
                 view.setLayoutParams(params);
                 holder.desc.setVisibility(View.GONE);
             } else {
-                params.height = MainActivity.convertDpToPx(getActivity(), 72);
+                params.height = MainActivity.convertDpToPx(getActivity(), viewType == 1 ? 72 : 88);
                 view.setLayoutParams(params);
                 holder.desc.setVisibility(View.VISIBLE);
             }
@@ -88,7 +88,11 @@ public class ArtLocationListFragment extends Fragment {
         public void onBindViewHolder(ArtViewHolder holder, int i) {
             ArtLocation location = mArtLocations.get(i);
             holder.title.setText(location.title);
-            String text = location.artist + "\n" + location.address;
+            String text = location.artist;
+            if (!text.isEmpty()) {
+                text += "\n";
+            }
+            text += location.address;
             holder.desc.setText(text);
         }
 
