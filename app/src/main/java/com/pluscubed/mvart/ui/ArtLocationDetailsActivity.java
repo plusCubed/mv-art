@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -59,17 +58,21 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean isWiFi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-        if (savedInstanceState == null && !isWiFi) {
+        /*if (savedInstanceState == null && !isWiFi) {
             MaterialDialog dialog = new MaterialDialog.Builder(this)
-                    .content("You are using mobile data. Displaying these images will use a lot of data. Are you sure you want to view them?")
+                    .content("You are using mobile data. Are you sure you want to view these pictures?")
                     .positiveText("Continue")
+                    .neutralText("Continue and Don't Ask Again")
                     .negativeText("Go back")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             init();
                         }
-
+                        @Override
+                        public void onNeutral(MaterialDialog dialog) {
+                            super.onNeutral(dialog);
+                        }
                         @Override
                         public void onNegative(MaterialDialog dialog) {
                             finish();
@@ -78,9 +81,9 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
                     .build();
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-        } else {
+        } else {*/
             init();
-        }
+        /*}*/
     }
 
     private void init() {
