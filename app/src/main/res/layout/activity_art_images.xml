@@ -14,6 +14,7 @@
         android:id="@id/toolbar_generic"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:background="#7f000000"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:contentInsetStart="16dp" />
 
