@@ -2,10 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="Theme.MVArt" parent="Base.Theme.MVArt" />
-
-    <style name="Theme.MVArt.Launch" parent="Base.Theme.MVArt">
-        <item name="android:windowBackground">@drawable/launchscreen</item>
-    </style>
+    <!--
+        <style name="Theme.MVArt.Launch" parent="Base.Theme.MVArt">
+            <item name="android:windowBackground">@drawable/launchscreen</item>
+        </style>-->
 
     <style name="Base.Theme.MVArt" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="toolbarShadow">@drawable/toolbar_shadow</item>
@@ -16,5 +16,19 @@
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+    <style name="Theme.MVArt.Launch" parent="Base.Theme.MVArt">
+        <item name="android:windowTitleSize">?actionBarSize</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+        <item name="android:windowNoTitle">false</item>
+
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Changes the background color of the title bar -->
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">@color/primary</item>
+    </style>
+
 
 </resources>
