@@ -1,16 +1,21 @@
 package com.pluscubed.mvart.ui;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -26,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdate;
@@ -56,9 +62,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String STATE_MAP_MODE = "mapMode";
     public static final String FRAGMENT_MAP = "Map";
     public static final String FRAGMENT_LIST = "List";
+
+    private static final int REQUEST_LOCATION = 42;
+
     private List<Marker> mMarkers;
     private Toolbar mActionBarToolbar;
     private boolean mMapMode;
+
+    private boolean mNeedEnableLocation;
 
     public static int convertDpToPx(Context context, float dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density
@@ -124,6 +135,32 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode != REQUEST_LOCATION ||
+                (permissions.length == 1 &&
+                        permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            getMap().setMyLocationEnabled(true);
+        } else {
+            // Permission was denied. Display an error message.
+            new MaterialDialog.Builder(this)
+                    .title(R.string.permission_needed)
+                    .content(R.string.permission_denied_desc)
+                    .cancelable(false)
+                    .positiveText(android.R.string.ok)
+                    .show();
+        }
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_LOCATION);
+    }
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -134,6 +171,13 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(
                     new ActivityManager.TaskDescription(null, null, getResources().getColor(R.color.task_bar)));
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
+        } else {
+            mNeedEnableLocation = true;
         }
 
         mMarkers = new ArrayList<>();
@@ -182,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setTitle("Mountain View Public Art");
+        setTitle(getString(R.string.app_name_full));
     }
 
     private void initMap(final MapFragment finalMapFragment) {
@@ -192,7 +236,11 @@ public class MainActivity extends AppCompatActivity {
                 finalMapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(final GoogleMap googleMap) {
-                        googleMap.setMyLocationEnabled(true);
+                        if (mNeedEnableLocation) {
+                            googleMap.setMyLocationEnabled(true);
+                            mNeedEnableLocation = false;
+                        }
+
                         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                             private Bitmap mLoadingBitmap;

@@ -14,6 +14,8 @@
     <string name="list_of_all_art">List of all art</string>
     <string name="map_icon">Map Icon</string>
 
+    <string name="app_name_full">Mountain View Public Art</string>
+
     <string name="details_artist">
              &lt;b>Artist:&lt;/b> %1$s
     </string>
@@ -34,4 +36,7 @@
         &lt;br/>&lt;b>Start Date:&lt;/b> %1$s
         &lt;br/>&lt;b>End Date:&lt;/b> %2$s
     </string>
+
+    <string name="permission_needed">Permission Needed</string>
+    <string name="permission_denied_desc">Permission to access your phone\'s location was denied and disabled.</string>
 </resources>
