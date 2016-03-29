@@ -8,8 +8,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -45,7 +49,7 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(
-                    new ActivityManager.TaskDescription(null, null, getResources().getColor(R.color.task_bar)));
+                    new ActivityManager.TaskDescription(null, null, ContextCompat.getColor(this, R.color.task_bar)));
             getWindow().setStatusBarColor(Color.BLACK);
         }
 
@@ -58,32 +62,29 @@ public class ArtLocationDetailsActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean isWiFi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-        /*if (savedInstanceState == null && !isWiFi) {
+        if (savedInstanceState == null && !isWiFi) {
             MaterialDialog dialog = new MaterialDialog.Builder(this)
                     .content("You are using mobile data. Are you sure you want to view these pictures?")
-                    .positiveText("Continue")
-                    .neutralText("Continue and Don't Ask Again")
-                    .negativeText("Go back")
-                    .callback(new MaterialDialog.ButtonCallback() {
+                    .positiveText(R.string.continue_string)
+                    .negativeText(R.string.go_back)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onPositive(MaterialDialog dialog) {
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             init();
                         }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onNeutral(MaterialDialog dialog) {
-                            super.onNeutral(dialog);
-                        }
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             finish();
                         }
                     })
                     .build();
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-        } else {*/
+        } else {
             init();
-        /*}*/
+        }
     }
 
     private void init() {

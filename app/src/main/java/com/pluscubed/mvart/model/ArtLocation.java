@@ -34,11 +34,13 @@ public class ArtLocation {
     }
 
     private static long parseString(String string) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return format.parse(string).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (!string.isEmpty()) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                return format.parse(string).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return 0;
     }

@@ -39,4 +39,7 @@
 
     <string name="permission_needed">Permission Needed</string>
     <string name="permission_denied_desc">Permission to access your phone\'s location was denied and disabled.</string>
+    <string name="continue_string">Continue</string>
+    <string name="continue_dont_ask">Continue and Don\'t Ask Again</string>
+    <string name="go_back">Go back</string>
 </resources>

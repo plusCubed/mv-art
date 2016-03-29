@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mMapMode;
 
     private boolean mNeedEnableLocation;
+    private FrameLayout mMainListFragmentFrame;
 
     public static int convertDpToPx(Context context, float dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(
-                    new ActivityManager.TaskDescription(null, null, getResources().getColor(R.color.task_bar)));
+                    new ActivityManager.TaskDescription(null, null, ContextCompat.getColor(this, R.color.task_bar)));
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -192,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mMapMode = savedInstanceState.getBoolean(STATE_MAP_MODE);
         }
+
+        mMainListFragmentFrame = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
 
         //ADD FRAGMENTS
         addMapFragment();
@@ -293,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                 }
 
-                                v.post(new Runnable() {
+                                findViewById(android.R.id.content).post(new Runnable() {
                                     @Override
                                     public void run() {
                                         int infoWindowHeight = v.getMeasuredHeight();
@@ -365,16 +368,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideList() {
-        final FrameLayout layout = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
-        ObjectAnimator animator = new ObjectAnimator();
-        animator.setProperty(View.TRANSLATION_Y);
-        animator.setTarget(layout);
-        animator.setFloatValues(layout.getHeight());
-        animator.setDuration(150);
-        animator.setInterpolator(new FastOutLinearInInterpolator());
-        animator.start();
-        mMapMode = true;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        mMainListFragmentFrame.post(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator animator = new ObjectAnimator();
+                animator.setProperty(View.TRANSLATION_Y);
+                animator.setTarget(mMainListFragmentFrame);
+                animator.setFloatValues(mMainListFragmentFrame.getHeight());
+                animator.setDuration(150);
+                animator.setInterpolator(new FastOutLinearInInterpolator());
+                animator.start();
+                mMapMode = true;
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+        });
     }
 
     private void showAndUpdateList() {
@@ -385,11 +392,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showList() {
-        final FrameLayout listFrame = (FrameLayout) findViewById(R.id.activity_main_list_framelayout);
         ObjectAnimator animator = new ObjectAnimator();
         animator.setProperty(View.TRANSLATION_Y);
         animator.setFloatValues(0f);
-        animator.setTarget(listFrame);
+        animator.setTarget(mMainListFragmentFrame);
         animator.setDuration(150);
         animator.setInterpolator(new LinearOutSlowInInterpolator());
         animator.start();

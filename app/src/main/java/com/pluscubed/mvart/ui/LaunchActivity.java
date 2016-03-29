@@ -8,9 +8,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pluscubed.mvart.R;
 import com.pluscubed.mvart.model.ArtLocation;
@@ -39,7 +42,7 @@ public class LaunchActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setTaskDescription(
-                    new ActivityManager.TaskDescription(null, null, getResources().getColor(R.color.task_bar)));
+                    new ActivityManager.TaskDescription(null, null, ContextCompat.getColor(this, R.color.task_bar)));
         }
 
         downloadArtLocationsToList();
@@ -58,10 +61,9 @@ public class LaunchActivity extends AppCompatActivity {
                         .content(getString(R.string.cant_connect))
                         .positiveText(getString(R.string.dismiss))
                         .negativeText(getString(R.string.retry))
-                        .callback(new MaterialDialog.ButtonCallback() {
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 downloadArtLocationsToList();
                             }
                         })
