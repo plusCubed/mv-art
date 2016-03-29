@@ -4,7 +4,7 @@
     <item android:bottom="256dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_launcher_576" />
     </item>
     <item android:bottom="96dp">
         <bitmap
